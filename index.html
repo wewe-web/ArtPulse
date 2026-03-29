@@ -3,197 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArtPulse | File & Mail Portal</title>
+    <title>ArtPulse | Official Portal</title>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            // Your Public Key
+            emailjs.init("mAPZnbtiyWpZVLyfp");
+        })();
+    </script>
+
     <style>
         :root {
             --lavender: #e2d1f9;
             --mint: #d1f9e8;
-            --soft-pink: #ffdce3;
+            --text-dark: #4a4e69;
             --glass: rgba(255, 255, 255, 0.8);
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(120deg, var(--lavender), var(--mint));
-            min-height: 100vh;
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, var(--lavender) 0%, var(--mint) 100%);
+            margin: 0;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
             padding: 20px;
-            color: #444;
+            color: var(--text-dark);
         }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
+        .card {
             background: var(--glass);
-            backdrop-filter: blur(15px);
-            border-radius: 30px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            backdrop-filter: blur(12px);
             border: 1px solid white;
+            border-radius: 30px;
+            padding: 35px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            height: fit-content;
         }
 
-        h2 { text-align: center; color: #6d5dfc; margin-top: 0; }
+        h2 { text-align: center; color: #8e7dff; margin-bottom: 25px; }
 
-        .form-box { display: flex; flex-direction: column; gap: 15px; }
+        .field { margin-bottom: 18px; }
 
-        label { font-size: 0.85rem; font-weight: 600; margin-bottom: -10px; padding-left: 5px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 6px; color: #777; }
 
         input, textarea {
-            padding: 12px;
+            width: 100%;
+            padding: 14px;
             border-radius: 15px;
-            border: 2px solid white;
-            background: rgba(255,255,255,0.5);
+            border: 1px solid #fff;
+            background: rgba(255,255,255,0.6);
+            box-sizing: border-box;
             outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            background: white;
+            border-color: #8e7dff;
+            box-shadow: 0 0 10px rgba(142, 125, 255, 0.2);
+        }
+
+        #sendBtn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 15px;
+            background: #8e7dff;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(142, 125, 255, 0.3);
             transition: 0.3s;
         }
 
-        input:focus { border-color: var(--lavender); background: white; }
+        #sendBtn:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(142, 125, 255, 0.4); }
+        #sendBtn:disabled { background: #ccc; cursor: not-allowed; }
 
-        /* File Upload Styling */
-        .file-input-wrapper {
-            border: 2px dashed #ccc;
-            padding: 20px;
-            text-align: center;
-            border-radius: 15px;
-            cursor: pointer;
-            background: rgba(255,255,255,0.3);
-        }
+        .logs-title { margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px; font-size: 1.1rem; }
 
-        #preview {
-            max-width: 100%;
-            height: 150px;
-            object-fit: contain;
-            display: none;
-            margin-top: 10px;
-            border-radius: 10px;
-        }
-
-        .btn-send {
-            background: #6d5dfc;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(109, 93, 252, 0.3);
-        }
-
-        .history-item {
+        .log-item {
             background: white;
-            border-radius: 20px;
             padding: 15px;
-            margin-top: 15px;
-            position: relative;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            border-left: 6px solid var(--mint);
+            animation: fadeIn 0.5s ease;
         }
 
-        .time-badge { font-size: 0.7rem; color: #aaa; }
-        .status { float: right; font-size: 0.7rem; color: #4caf50; font-weight: bold; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .time-stamp { font-size: 0.7rem; color: #aaa; margin-top: 5px; display: block; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>✨ ArtPulse Uploader</h2>
+<div class="card">
+    <h2>✨ Post Your Work</h2>
     
-    <div class="form-box">
-        <label>Sender Gmail</label>
-        <input type="email" id="senderEmail" placeholder="yourname@gmail.com">
-
-        <label>Title of Work</label>
-        <input type="text" id="workTitle" placeholder="Ex: Sunset Poem or Digital Art">
-
-        <label>Upload Image/Art/Doc</label>
-        <div class="file-input-wrapper" onclick="document.getElementById('fileInput').click()">
-            <span>Click to choose a file 📁</span>
-            <input type="file" id="fileInput" hidden onchange="handleFile(event)">
-            <img id="preview" alt="Preview">
-        </div>
-
-        <label>Description/Notes</label>
-        <textarea id="workDesc" rows="3" placeholder="Tell the judge about your work..."></textarea>
-
-        <button class="btn-send" onclick="submitEverything()">Save & Open Gmail</button>
+    <div class="field">
+        <label>Your Gmail Address</label>
+        <input type="email" id="uEmail" placeholder="yourname@gmail.com">
     </div>
 
-    <h3 style="margin-top: 40px;">Submission History</h3>
-    <div id="history"></div>
+    <div class="field">
+        <label>Work Title</label>
+        <input type="text" id="uTitle" placeholder="Ex: My First Digital Art">
+    </div>
+
+    <div class="field">
+        <label>Content (Text or Links)</label>
+        <textarea id="uContent" rows="5" placeholder="Paste your work content or video link here..."></textarea>
+    </div>
+
+    <button id="sendBtn" onclick="sendSubmission()">Deliver to Judge</button>
+
+    <div class="logs-title">Submission History</div>
+    <div id="logsContainer"></div>
 </div>
 
 <script>
-    const ADMIN_EMAIL = "eiyanguray@gmail.com";
-    let fileBase64 = "";
-
-    function handleFile(event) {
-        const file = event.target.files[0];
-        const preview = document.getElementById('preview');
-        
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                fileBase64 = e.target.result; // Saves file as string
-                if(file.type.startsWith('image/')) {
-                    preview.src = e.target.result;
-                    preview.style.display = "block";
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function submitEverything() {
-        const email = document.getElementById('senderEmail').value;
-        const title = document.getElementById('workTitle').value;
-        const desc = document.getElementById('workDesc').value;
+    function sendSubmission() {
+        const btn = document.getElementById('sendBtn');
+        const email = document.getElementById('uEmail').value;
+        const title = document.getElementById('uTitle').value;
+        const content = document.getElementById('uContent').value;
         const now = new Date();
-        const fullDate = now.toLocaleDateString() + " at " + now.toLocaleTimeString();
+        const timeStr = now.toLocaleDateString() + " | " + now.toLocaleTimeString();
 
-        if(!email || !title) {
-            alert("Please provide at least your email and a title!");
+        if(!email || !title || !content) {
+            alert("Please complete all fields!");
             return;
         }
 
-        // 1. Save to Local Storage
-        const submission = { email, title, desc, date: fullDate, file: fileBase64 };
-        let history = JSON.parse(localStorage.getItem('artHistory')) || [];
-        history.unshift(submission);
-        localStorage.setItem('artHistory', JSON.stringify(history));
+        btn.innerText = "Sending to Gmail...";
+        btn.disabled = true;
 
-        // 2. Prepare Gmail
-        // Note: Gmail 'mailto' doesn't support direct file attachments for security, 
-        // so we tell the user to attach it or include the title for reference.
-        const subject = encodeURIComponent(`Submission: ${title}`);
-        const body = encodeURIComponent(
-            `SUBMISSION DETAILS\n` +
-            `------------------\n` +
-            `From: ${email}\n` +
-            `Sent: ${fullDate}\n\n` +
-            `Work Title: ${title}\n` +
-            `Description: ${desc}\n\n` +
-            `[User: Please attach your file to this email before sending!]`
-        );
+        const params = {
+            from_name: email,
+            work_title: title,
+            work_desc: content,
+            submission_time: timeStr
+        };
 
-        window.location.href = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
-
-        loadHistory();
+        // Sending via your verified Service and Template IDs
+        emailjs.send('service_ikiqqyi', 'template_h851dko', params)
+            .then(() => {
+                alert("🚀 Success! Your work was delivered to eiyanguray@gmail.com");
+                saveLog(email, title, timeStr);
+                resetForm();
+            })
+            .catch((err) => {
+                alert("Error: " + JSON.stringify(err));
+            })
+            .finally(() => {
+                btn.innerText = "Deliver to Judge";
+                btn.disabled = false;
+            });
     }
 
-    function loadHistory() {
-        const historyDiv = document.getElementById('history');
-        const data = JSON.parse(localStorage.getItem('artHistory')) || [];
-        historyDiv.innerHTML = data.map(item => `
-            <div class="history-item">
-                <span class="status">✓ Delivered</span>
-                <strong>${item.title}</strong><br>
-                <small>${item.desc}</small><br>
-                <span class="time-badge">${item.date}</span>
-                ${item.file ? `<br><img src="${item.file}" style="height:50px; margin-top:5px; border-radius:5px;">` : ''}
+    function saveLog(email, title, time) {
+        let logs = JSON.parse(localStorage.getItem('artPulseLogs')) || [];
+        logs.unshift({ email, title, time });
+        localStorage.setItem('artPulseLogs', JSON.stringify(logs));
+        renderLogs();
+    }
+
+    function renderLogs() {
+        const container = document.getElementById('logsContainer');
+        const logs = JSON.parse(localStorage.getItem('artPulseLogs')) || [];
+        container.innerHTML = logs.map(l => `
+            <div class="log-item">
+                <strong>${l.title}</strong><br>
+                <span style="font-size:0.8rem">${l.email}</span>
+                <span class="time-stamp">Delivered on: ${l.time}</span>
             </div>
         `).join('');
     }
 
-    loadHistory();
+    function resetForm() {
+        document.getElementById('uTitle').value = '';
+        document.getElementById('uContent').value = '';
+    }
+
+    renderLogs();
 </script>
 
 </body>
