@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArtPulse | Official Portal</title>
+    <title>ArtPulse | Grading Edition</title>
     
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            // Your Public Key
             emailjs.init("mAPZnbtiyWpZVLyfp");
         })();
     </script>
@@ -17,177 +16,286 @@
         :root {
             --lavender: #e2d1f9;
             --mint: #d1f9e8;
-            --text-dark: #4a4e69;
-            --glass: rgba(255, 255, 255, 0.8);
+            --purple: #7b61ff;
+            --glass: rgba(255, 255, 255, 0.95);
         }
 
         body {
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, var(--lavender) 0%, var(--mint) 100%);
-            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--lavender), var(--mint));
             display: flex;
             justify-content: center;
-            min-height: 100vh;
             padding: 20px;
-            color: var(--text-dark);
+            margin: 0;
+            color: #333;
         }
 
         .card {
             background: var(--glass);
-            backdrop-filter: blur(12px);
-            border: 1px solid white;
-            border-radius: 30px;
-            padding: 35px;
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 30px;
             width: 100%;
-            max-width: 450px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-            height: fit-content;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        h2 { text-align: center; color: #8e7dff; margin-bottom: 25px; }
+        h2, h3 { text-align: center; color: var(--purple); margin-top: 0; }
 
-        .field { margin-bottom: 18px; }
-
-        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 6px; color: #777; }
+        .field { margin-bottom: 12px; }
+        label { display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: #666; }
 
         input, textarea {
             width: 100%;
-            padding: 14px;
-            border-radius: 15px;
-            border: 1px solid #fff;
-            background: rgba(255,255,255,0.6);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
             box-sizing: border-box;
-            outline: none;
-            transition: all 0.3s ease;
         }
 
-        input:focus, textarea:focus {
-            background: white;
-            border-color: #8e7dff;
-            box-shadow: 0 0 10px rgba(142, 125, 255, 0.2);
+        .upload-area {
+            border: 2px dashed var(--purple);
+            padding: 10px;
+            text-align: center;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            font-size: 0.9rem;
         }
 
-        #sendBtn {
+        #file-preview {
+            max-width: 100%;
+            height: 60px;
+            margin-top: 5px;
+            display: none;
+            border-radius: 5px;
+            object-fit: contain;
+        }
+
+        .btn-main {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             border: none;
-            border-radius: 15px;
-            background: #8e7dff;
+            border-radius: 10px;
+            background: var(--purple);
             color: white;
             font-weight: bold;
-            font-size: 1rem;
             cursor: pointer;
-            box-shadow: 0 8px 15px rgba(142, 125, 255, 0.3);
-            transition: 0.3s;
+            margin-top: 10px;
         }
 
-        #sendBtn:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(142, 125, 255, 0.4); }
-        #sendBtn:disabled { background: #ccc; cursor: not-allowed; }
+        .history-section {
+            margin-top: 25px;
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+        }
 
-        .logs-title { margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px; font-size: 1.1rem; }
-
-        .log-item {
+        .log-entry {
             background: white;
-            padding: 15px;
-            border-radius: 15px;
+            padding: 12px;
+            border-radius: 12px;
             margin-bottom: 12px;
-            border-left: 6px solid var(--mint);
-            animation: fadeIn 0.5s ease;
+            border-left: 5px solid var(--purple);
+            font-size: 0.85rem;
+            position: relative;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .grading-box {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+            background: #f9f9f9;
+            padding: 5px;
+            border-radius: 8px;
+        }
 
-        .time-stamp { font-size: 0.7rem; color: #aaa; margin-top: 5px; display: block; }
+        .grade-input {
+            width: 60px;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .btn-grade {
+            background: var(--mint);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 5px 10px;
+        }
+
+        .btn-download {
+            background: #fff;
+            color: var(--purple);
+            border: 2px solid var(--purple);
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .timestamp { color: #999; font-size: 0.7rem; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>✨ Post Your Work</h2>
+    <h2>🎨 ArtPulse Portal</h2>
     
     <div class="field">
-        <label>Your Gmail Address</label>
-        <input type="email" id="uEmail" placeholder="yourname@gmail.com">
+        <label>Sender Gmail</label>
+        <input type="email" id="uEmail" placeholder="student@gmail.com">
     </div>
 
     <div class="field">
         <label>Work Title</label>
-        <input type="text" id="uTitle" placeholder="Ex: My First Digital Art">
+        <input type="text" id="uTitle" placeholder="Ex: Unit 1 Project">
     </div>
 
     <div class="field">
-        <label>Content (Text or Links)</label>
-        <textarea id="uContent" rows="5" placeholder="Paste your work content or video link here..."></textarea>
+        <label>Upload Work</label>
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <span id="file-label">Click to upload 📁</span>
+            <input type="file" id="fileInput" hidden onchange="processFile(event)">
+            <center><img id="file-preview"></center>
+        </div>
     </div>
 
-    <button id="sendBtn" onclick="sendSubmission()">Deliver to Judge</button>
+    <div class="field">
+        <label>Notes/Description</label>
+        <textarea id="uDesc" rows="2" placeholder="Details..."></textarea>
+    </div>
 
-    <div class="logs-title">Submission History</div>
-    <div id="logsContainer"></div>
+    <button id="sendBtn" class="btn-main" onclick="sendWithAttachment()">Send Submission</button>
+
+    <div class="history-section">
+        <h3>Judge's Panel</h3>
+        <div id="logs"></div>
+        <button class="btn-download" onclick="downloadCSV()">📥 Download CSV (with Grades)</button>
+    </div>
 </div>
 
 <script>
-    function sendSubmission() {
+    let base64File = "";
+
+    function processFile(event) {
+        const file = event.target.files[0];
+        const label = document.getElementById('file-label');
+        const preview = document.getElementById('file-preview');
+
+        if (file) {
+            label.innerText = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                base64File = e.target.result;
+                if(file.type.startsWith('image/')) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function sendWithAttachment() {
         const btn = document.getElementById('sendBtn');
         const email = document.getElementById('uEmail').value;
         const title = document.getElementById('uTitle').value;
-        const content = document.getElementById('uContent').value;
-        const now = new Date();
-        const timeStr = now.toLocaleDateString() + " | " + now.toLocaleTimeString();
+        const desc = document.getElementById('uDesc').value;
+        const time = new Date().toLocaleString();
 
-        if(!email || !title || !content) {
-            alert("Please complete all fields!");
-            return;
-        }
+        if(!email || !title) return alert("Missing info!");
 
-        btn.innerText = "Sending to Gmail...";
+        btn.innerText = "Processing...";
         btn.disabled = true;
 
         const params = {
             from_name: email,
             work_title: title,
-            work_desc: content,
-            submission_time: timeStr
+            work_desc: desc,
+            submission_time: time,
+            content_file: base64File 
         };
 
-        // Sending via your verified Service and Template IDs
-        emailjs.send('service_ikiqqyi', 'template_h851dko', params)
+        emailjs.send('service_ikiqqyi', 'template_h9enttv', params)
             .then(() => {
-                alert("🚀 Success! Your work was delivered to eiyanguray@gmail.com");
-                saveLog(email, title, timeStr);
-                resetForm();
+                alert("Sent successfully!");
+                // Initial grade is blank
+                saveToLocal(email, title, time, "");
+                clearForm();
             })
-            .catch((err) => {
-                alert("Error: " + JSON.stringify(err));
-            })
+            .catch(err => alert("Error: " + JSON.stringify(err)))
             .finally(() => {
-                btn.innerText = "Deliver to Judge";
+                btn.innerText = "Send Submission";
                 btn.disabled = false;
             });
     }
 
-    function saveLog(email, title, time) {
-        let logs = JSON.parse(localStorage.getItem('artPulseLogs')) || [];
-        logs.unshift({ email, title, time });
-        localStorage.setItem('artPulseLogs', JSON.stringify(logs));
+    function saveToLocal(email, title, time, grade) {
+        let history = JSON.parse(localStorage.getItem('artPulseV2')) || [];
+        // Unique ID based on time
+        const id = Date.now();
+        history.unshift({ id, email, title, time, grade });
+        localStorage.setItem('artPulseV2', JSON.stringify(history));
         renderLogs();
     }
 
+    function updateGrade(id) {
+        const gradeVal = document.getElementById(`grade-${id}`).value;
+        let history = JSON.parse(localStorage.getItem('artPulseV2')) || [];
+        const index = history.findIndex(item => item.id === id);
+        if (index !== -1) {
+            history[index].grade = gradeVal;
+            localStorage.setItem('artPulseV2', JSON.stringify(history));
+            alert("Grade Saved!");
+        }
+    }
+
     function renderLogs() {
-        const container = document.getElementById('logsContainer');
-        const logs = JSON.parse(localStorage.getItem('artPulseLogs')) || [];
-        container.innerHTML = logs.map(l => `
-            <div class="log-item">
-                <strong>${l.title}</strong><br>
-                <span style="font-size:0.8rem">${l.email}</span>
-                <span class="time-stamp">Delivered on: ${l.time}</span>
+        const logsDiv = document.getElementById('logs');
+        const history = JSON.parse(localStorage.getItem('artPulseV2')) || [];
+        logsDiv.innerHTML = history.map(item => `
+            <div class="log-entry">
+                <strong>${item.title}</strong><br>
+                ${item.email}<br>
+                <span class="timestamp">${item.time}</span>
+                <div class="grading-box">
+                    <input type="text" id="grade-${item.id}" class="grade-input" placeholder="Grade" value="${item.grade || ''}">
+                    <button class="btn-grade" onclick="updateGrade(${item.id})">Save Grade</button>
+                </div>
             </div>
         `).join('');
     }
 
-    function resetForm() {
-        document.getElementById('uTitle').value = '';
-        document.getElementById('uContent').value = '';
+    function downloadCSV() {
+        const history = JSON.parse(localStorage.getItem('artPulseV2')) || [];
+        if(history.length === 0) return alert("Nothing to export!");
+
+        let csv = "Title,Email,Date,Grade\n";
+        history.forEach(row => {
+            csv += `"${row.title}","${row.email}","${row.time}","${row.grade || 'N/A'}"\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('hidden', '');
+        a.setAttribute('href', url);
+        a.setAttribute('download', 'Class_Submissions_Report.csv');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    function clearForm() {
+        document.getElementById('uTitle').value = "";
+        document.getElementById('uDesc').value = "";
+        document.getElementById('fileInput').value = "";
+        document.getElementById('file-label').innerText = "Click to upload 📁";
+        document.getElementById('file-preview').style.display = "none";
+        base64File = "";
     }
 
     renderLogs();
