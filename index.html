@@ -3,302 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArtPulse | Grading Edition</title>
+    <title>ArtPulse | All-in-One Tools</title>
     
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function() {
-            emailjs.init("mAPZnbtiyWpZVLyfp");
-        })();
-    </script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <style>
         :root {
             --lavender: #e2d1f9;
             --mint: #d1f9e8;
+            --sky: #d9e4ff;
             --purple: #7b61ff;
-            --glass: rgba(255, 255, 255, 0.95);
+            --glass: rgba(255, 255, 255, 0.9);
         }
 
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, var(--lavender), var(--mint));
-            display: flex;
-            justify-content: center;
-            padding: 20px;
+            background: linear-gradient(135deg, var(--lavender), var(--mint), var(--sky));
             margin: 0;
-            color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #444;
         }
 
-        .card {
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
             background: var(--glass);
             backdrop-filter: blur(10px);
-            border-radius: 25px;
-            padding: 30px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid white;
         }
 
-        h2, h3 { text-align: center; color: var(--purple); margin-top: 0; }
-
-        .field { margin-bottom: 12px; }
-        label { display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: #666; }
-
-        input, textarea {
+        h2 { color: var(--purple); font-size: 1.2rem; margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        
+        input, select, textarea {
             width: 100%;
             padding: 10px;
+            margin: 8px 0;
             border-radius: 10px;
             border: 1px solid #ddd;
             box-sizing: border-box;
         }
 
-        .upload-area {
-            border: 2px dashed var(--purple);
-            padding: 10px;
-            text-align: center;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.5);
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        #file-preview {
-            max-width: 100%;
-            height: 60px;
-            margin-top: 5px;
-            display: none;
-            border-radius: 5px;
-            object-fit: contain;
-        }
-
-        .btn-main {
+        button {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border: none;
             border-radius: 10px;
             background: var(--purple);
             color: white;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
+            transition: 0.3s;
         }
 
-        .history-section {
-            margin-top: 25px;
-            border-top: 2px solid #eee;
-            padding-top: 15px;
-        }
+        button:hover { opacity: 0.9; transform: scale(1.02); }
 
-        .log-entry {
-            background: white;
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            border-left: 5px solid var(--purple);
-            font-size: 0.85rem;
-            position: relative;
-        }
-
-        .grading-box {
-            display: flex;
+        /* Calculator Specific */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 5px;
-            margin-top: 8px;
-            background: #f9f9f9;
-            padding: 5px;
-            border-radius: 8px;
         }
-
-        .grade-input {
-            width: 60px;
-            padding: 5px;
-            text-align: center;
-        }
-
-        .btn-grade {
-            background: var(--mint);
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            padding: 5px 10px;
-        }
-
-        .btn-download {
+        .calc-display {
+            grid-column: span 4;
             background: #fff;
-            color: var(--purple);
-            border: 2px solid var(--purple);
-            margin-top: 15px;
-            padding: 10px;
-            width: 100%;
+            padding: 15px;
+            text-align: right;
+            font-size: 1.5rem;
             border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
         }
-
-        .timestamp { color: #999; font-size: 0.7rem; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>🎨 ArtPulse Portal</h2>
+<h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">✨ ArtPulse Tools</h1>
+
+<div class="container">
     
-    <div class="field">
-        <label>Sender Gmail</label>
-        <input type="email" id="uEmail" placeholder="student@gmail.com">
+    <div class="tool-card">
+        <h2>📊 Excel Maker (Report Card)</h2>
+        <label>Student Name</label>
+        <input type="text" id="studentName" placeholder="Juan Dela Cruz">
+        <label>Section</label>
+        <input type="text" id="studentSection" placeholder="Grade 7 - Dakila">
+        <label>Average Grade</label>
+        <input type="number" id="studentGrade" placeholder="90">
+        <button onclick="generateExcel()">Download Excel Card</button>
     </div>
 
-    <div class="field">
-        <label>Work Title</label>
-        <input type="text" id="uTitle" placeholder="Ex: Unit 1 Project">
+    <div class="tool-card">
+        <h2>📥 Link Downloader</h2>
+        <input type="text" id="dlLink" placeholder="Paste link here...">
+        <select id="dlFormat">
+            <option value="pdf">Convert to PDF</option>
+            <option value="png">Convert to PNG</option>
+            <option value="jpeg">Convert to JPEG</option>
+        </select>
+        <button onclick="simulateDownload()">Download File</button>
+        <p style="font-size: 0.7rem; color: #888;">*Note: Simulates conversion for UI demo.</p>
     </div>
 
-    <div class="field">
-        <label>Upload Work</label>
-        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-            <span id="file-label">Click to upload 📁</span>
-            <input type="file" id="fileInput" hidden onchange="processFile(event)">
-            <center><img id="file-preview"></center>
+    <div class="tool-card">
+        <h2>🗣️ Text to Speech</h2>
+        <textarea id="ttsText" rows="3" placeholder="Type something to hear it..."></textarea>
+        <button onclick="speakText()" style="background: #ffcfdf; color: #b04b6a;">🔊 Play Voice</button>
+    </div>
+
+    <div class="tool-card">
+        <h2>🧮 Calculator</h2>
+        <div id="display" class="calc-display">0</div>
+        <div class="calc-grid">
+            <button onclick="clearCalc()" style="background:#ffcfdf; color:#b04b6a">C</button>
+            <button onclick="press('/')">/</button>
+            <button onclick="press('*')">*</button>
+            <button onclick="press('-')">-</button>
+            <button onclick="press('7')">7</button>
+            <button onclick="press('8')">8</button>
+            <button onclick="press('9')">9</button>
+            <button onclick="press('+')">+</button>
+            <button onclick="press('4')">4</button>
+            <button onclick="press('5')">5</button>
+            <button onclick="press('6')">6</button>
+            <button onclick="calculate()" style="background:var(--mint); color:#2d6a4f; grid-row: span 2">=</button>
+            <button onclick="press('1')">1</button>
+            <button onclick="press('2')">2</button>
+            <button onclick="press('3')">3</button>
+            <button onclick="press('0')" style="grid-column: span 3">0</button>
         </div>
     </div>
 
-    <div class="field">
-        <label>Notes/Description</label>
-        <textarea id="uDesc" rows="2" placeholder="Details..."></textarea>
-    </div>
-
-    <button id="sendBtn" class="btn-main" onclick="sendWithAttachment()">Send Submission</button>
-
-    <div class="history-section">
-        <h3>Judge's Panel</h3>
-        <div id="logs"></div>
-        <button class="btn-download" onclick="downloadCSV()">📥 Download CSV (with Grades)</button>
-    </div>
 </div>
 
 <script>
-    let base64File = "";
+    // --- EXCEL GENERATOR ---
+    function generateExcel() {
+        const name = document.getElementById('studentName').value || "Student";
+        const section = document.getElementById('studentSection').value || "N/A";
+        const grade = document.getElementById('studentGrade').value || "0";
 
-    function processFile(event) {
-        const file = event.target.files[0];
-        const label = document.getElementById('file-label');
-        const preview = document.getElementById('file-preview');
+        const data = [
+            ["PHILIPPINES DEPARTMENT OF EDUCATION", "", ""],
+            ["REPORT CARD", "", ""],
+            ["", "", ""],
+            ["Student Name:", name, ""],
+            ["Section:", section, ""],
+            ["", "", ""],
+            ["SUBJECT", "GRADE", "REMARKS"],
+            ["Filipino", grade, grade >= 75 ? "Passed" : "Failed"],
+            ["English", grade, grade >= 75 ? "Passed" : "Failed"],
+            ["Mathematics", grade, grade >= 75 ? "Passed" : "Failed"],
+            ["Science", grade, grade >= 75 ? "Passed" : "Failed"],
+            ["MAPEH", grade, grade >= 75 ? "Passed" : "Failed"],
+        ];
 
-        if (file) {
-            label.innerText = file.name;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                base64File = e.target.result;
-                if(file.type.startsWith('image/')) {
-                    preview.src = e.target.result;
-                    preview.style.display = "block";
-                }
-            };
-            reader.readAsDataURL(file);
-        }
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        XLSX.utils.book_append_sheet(wb, ws, "ReportCard");
+        XLSX.writeFile(wb, `${name}_ReportCard.xlsx`);
     }
 
-    function sendWithAttachment() {
-        const btn = document.getElementById('sendBtn');
-        const email = document.getElementById('uEmail').value;
-        const title = document.getElementById('uTitle').value;
-        const desc = document.getElementById('uDesc').value;
-        const time = new Date().toLocaleString();
-
-        if(!email || !title) return alert("Missing info!");
-
-        btn.innerText = "Processing...";
-        btn.disabled = true;
-
-        const params = {
-            from_name: email,
-            work_title: title,
-            work_desc: desc,
-            submission_time: time,
-            content_file: base64File 
-        };
-
-        emailjs.send('service_ikiqqyi', 'template_h9enttv', params)
-            .then(() => {
-                alert("Sent successfully!");
-                // Initial grade is blank
-                saveToLocal(email, title, time, "");
-                clearForm();
-            })
-            .catch(err => alert("Error: " + JSON.stringify(err)))
-            .finally(() => {
-                btn.innerText = "Send Submission";
-                btn.disabled = false;
-            });
-    }
-
-    function saveToLocal(email, title, time, grade) {
-        let history = JSON.parse(localStorage.getItem('artPulseV2')) || [];
-        // Unique ID based on time
-        const id = Date.now();
-        history.unshift({ id, email, title, time, grade });
-        localStorage.setItem('artPulseV2', JSON.stringify(history));
-        renderLogs();
-    }
-
-    function updateGrade(id) {
-        const gradeVal = document.getElementById(`grade-${id}`).value;
-        let history = JSON.parse(localStorage.getItem('artPulseV2')) || [];
-        const index = history.findIndex(item => item.id === id);
-        if (index !== -1) {
-            history[index].grade = gradeVal;
-            localStorage.setItem('artPulseV2', JSON.stringify(history));
-            alert("Grade Saved!");
-        }
-    }
-
-    function renderLogs() {
-        const logsDiv = document.getElementById('logs');
-        const history = JSON.parse(localStorage.getItem('artPulseV2')) || [];
-        logsDiv.innerHTML = history.map(item => `
-            <div class="log-entry">
-                <strong>${item.title}</strong><br>
-                ${item.email}<br>
-                <span class="timestamp">${item.time}</span>
-                <div class="grading-box">
-                    <input type="text" id="grade-${item.id}" class="grade-input" placeholder="Grade" value="${item.grade || ''}">
-                    <button class="btn-grade" onclick="updateGrade(${item.id})">Save Grade</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function downloadCSV() {
-        const history = JSON.parse(localStorage.getItem('artPulseV2')) || [];
-        if(history.length === 0) return alert("Nothing to export!");
-
-        let csv = "Title,Email,Date,Grade\n";
-        history.forEach(row => {
-            csv += `"${row.title}","${row.email}","${row.time}","${row.grade || 'N/A'}"\n`;
-        });
-
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
+    // --- DOWNLOADER SIMULATOR ---
+    function simulateDownload() {
+        const link = document.getElementById('dlLink').value;
+        const format = document.getElementById('dlFormat').value;
+        if(!link) return alert("Paste a link first!");
+        
+        alert(`Connecting to server...\nFile converted to ${format.toUpperCase()}\nDownload starting!`);
+        
+        // This is a "dummy" download for UI purposes
         const a = document.createElement('a');
-        a.setAttribute('hidden', '');
-        a.setAttribute('href', url);
-        a.setAttribute('download', 'Class_Submissions_Report.csv');
-        document.body.appendChild(a);
+        a.href = "data:text/plain;charset=utf-8,ArtPulseDownloadData";
+        a.download = `ArtPulse_File.${format}`;
         a.click();
-        document.body.removeChild(a);
     }
 
-    function clearForm() {
-        document.getElementById('uTitle').value = "";
-        document.getElementById('uDesc').value = "";
-        document.getElementById('fileInput').value = "";
-        document.getElementById('file-label').innerText = "Click to upload 📁";
-        document.getElementById('file-preview').style.display = "none";
-        base64File = "";
+    // --- TEXT TO SPEECH ---
+    function speakText() {
+        const text = document.getElementById('ttsText').value;
+        if(!text) return alert("Type something!");
+        const msg = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(msg);
     }
 
-    renderLogs();
+    // --- CALCULATOR LOGIC ---
+    let calcVal = "";
+    function press(num) {
+        calcVal += num;
+        document.getElementById('display').innerText = calcVal;
+    }
+    function clearCalc() {
+        calcVal = "";
+        document.getElementById('display').innerText = "0";
+    }
+    function calculate() {
+        try {
+            calcVal = eval(calcVal).toString();
+            document.getElementById('display').innerText = calcVal;
+        } catch {
+            document.getElementById('display').innerText = "Error";
+            calcVal = "";
+        }
+    }
 </script>
 
 </body>
