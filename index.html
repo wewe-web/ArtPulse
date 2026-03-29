@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtPulse | File & Mail Portal</title>
+    <style>
+        :root {
+            --lavender: #e2d1f9;
+            --mint: #d1f9e8;
+            --soft-pink: #ffdce3;
+            --glass: rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(120deg, var(--lavender), var(--mint));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            color: #444;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid white;
+        }
+
+        h2 { text-align: center; color: #6d5dfc; margin-top: 0; }
+
+        .form-box { display: flex; flex-direction: column; gap: 15px; }
+
+        label { font-size: 0.85rem; font-weight: 600; margin-bottom: -10px; padding-left: 5px; }
+
+        input, textarea {
+            padding: 12px;
+            border-radius: 15px;
+            border: 2px solid white;
+            background: rgba(255,255,255,0.5);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--lavender); background: white; }
+
+        /* File Upload Styling */
+        .file-input-wrapper {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.3);
+        }
+
+        #preview {
+            max-width: 100%;
+            height: 150px;
+            object-fit: contain;
+            display: none;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+
+        .btn-send {
+            background: #6d5dfc;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(109, 93, 252, 0.3);
+        }
+
+        .history-item {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 15px;
+            position: relative;
+        }
+
+        .time-badge { font-size: 0.7rem; color: #aaa; }
+        .status { float: right; font-size: 0.7rem; color: #4caf50; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>✨ ArtPulse Uploader</h2>
+    
+    <div class="form-box">
+        <label>Sender Gmail</label>
+        <input type="email" id="senderEmail" placeholder="yourname@gmail.com">
+
+        <label>Title of Work</label>
+        <input type="text" id="workTitle" placeholder="Ex: Sunset Poem or Digital Art">
+
+        <label>Upload Image/Art/Doc</label>
+        <div class="file-input-wrapper" onclick="document.getElementById('fileInput').click()">
+            <span>Click to choose a file 📁</span>
+            <input type="file" id="fileInput" hidden onchange="handleFile(event)">
+            <img id="preview" alt="Preview">
+        </div>
+
+        <label>Description/Notes</label>
+        <textarea id="workDesc" rows="3" placeholder="Tell the judge about your work..."></textarea>
+
+        <button class="btn-send" onclick="submitEverything()">Save & Open Gmail</button>
+    </div>
+
+    <h3 style="margin-top: 40px;">Submission History</h3>
+    <div id="history"></div>
+</div>
+
+<script>
+    const ADMIN_EMAIL = "eiyanguray@gmail.com";
+    let fileBase64 = "";
+
+    function handleFile(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('preview');
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                fileBase64 = e.target.result; // Saves file as string
+                if(file.type.startsWith('image/')) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function submitEverything() {
+        const email = document.getElementById('senderEmail').value;
+        const title = document.getElementById('workTitle').value;
+        const desc = document.getElementById('workDesc').value;
+        const now = new Date();
+        const fullDate = now.toLocaleDateString() + " at " + now.toLocaleTimeString();
+
+        if(!email || !title) {
+            alert("Please provide at least your email and a title!");
+            return;
+        }
+
+        // 1. Save to Local Storage
+        const submission = { email, title, desc, date: fullDate, file: fileBase64 };
+        let history = JSON.parse(localStorage.getItem('artHistory')) || [];
+        history.unshift(submission);
+        localStorage.setItem('artHistory', JSON.stringify(history));
+
+        // 2. Prepare Gmail
+        // Note: Gmail 'mailto' doesn't support direct file attachments for security, 
+        // so we tell the user to attach it or include the title for reference.
+        const subject = encodeURIComponent(`Submission: ${title}`);
+        const body = encodeURIComponent(
+            `SUBMISSION DETAILS\n` +
+            `------------------\n` +
+            `From: ${email}\n` +
+            `Sent: ${fullDate}\n\n` +
+            `Work Title: ${title}\n` +
+            `Description: ${desc}\n\n` +
+            `[User: Please attach your file to this email before sending!]`
+        );
+
+        window.location.href = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
+
+        loadHistory();
+    }
+
+    function loadHistory() {
+        const historyDiv = document.getElementById('history');
+        const data = JSON.parse(localStorage.getItem('artHistory')) || [];
+        historyDiv.innerHTML = data.map(item => `
+            <div class="history-item">
+                <span class="status">✓ Delivered</span>
+                <strong>${item.title}</strong><br>
+                <small>${item.desc}</small><br>
+                <span class="time-badge">${item.date}</span>
+                ${item.file ? `<br><img src="${item.file}" style="height:50px; margin-top:5px; border-radius:5px;">` : ''}
+            </div>
+        `).join('');
+    }
+
+    loadHistory();
+</script>
+
+</body>
+</html>
